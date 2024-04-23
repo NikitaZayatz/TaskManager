@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Административный кабинет</title>
+    <link rel="stylesheet" href="/styles/admin.css">
+    <script th:src="@{/js/confirmDelete.js}" defer></script>
+</head>
+<body>
+<header>
+    <h1>Административный кабинет</h1>
+</header>
+
+<main>
+    <section class="tasks">
+        <h2>Поставленные задачи</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Наименование</th>
+                <th>Описание</th>
+                <th>Дедлайн</th>
+                <th>Статус</th>
+                <th>Исполнители</th>
+            </tr>
+            </thead>
+            <tbody>
+
+
+            <form th:each="task: ${tasks}" th:action="@{/admin/addTask/}" method="POST">
+                <tr>
+                    <td><input th:value="${task.name}" id="attraction_name" name="attraction_name"/></td>
+                    <td><input th:value="${task.description}" id="attraction_description" name="attraction_description"/></td>
+                    <td><input th:value="${task.deadline}"/></td>
+                    <td><input th:value="${task.getStatus()}"/></td>
+                    <td><input type="submit" value="Изменить"/></td>
+                    <td>
+                        <button type="button" onclick="confirmDelete(${task.task_id})">Удалить</button>
+                    </td>
+                </tr>
+            </form>
+            </tbody>
+        </table>
+        <button class="new-task-button">Новая задача</button>
+    </section>
+
+    <section class="responsibles">
+        <h2>Ответственные лица</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Имя</th>
+                <th>Должность</th>
+                <th>Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <form th:each="user: ${users}" th:action="@{/admin/addTask/}" method="POST">
+                <tr>
+                    <td><input th:value="${user.username}"/></td>
+                    <td><input th:value="${user.department}"/></td>
+                    <td><input th:value="${user.workPhone}"/></td>
+                    <td>
+                        <form th:action="@{/auth/changePerson}" method="get">
+                        <input type="submit" value="Изменить"/>
+                        </form>
+                    </td>
+                    <td>
+                        <form th:action="@{'/auth/deleteUser/' + ${user.userId}}" method="get" id="deleteForm">
+                        <button onclick="confirmDelete()">Удалить</button>
+                         </form>
+                    </td>
+                </tr>
+            </form>
+            </tbody>
+        </table>
+        <button class="new-responsible-button">Добавить ответственное лицо</button>
+    </section>
+</main>
+<script>
+    function confirmDelete() {
+        var modal = document.getElementById("confirmModal");
+        modal.style.display = "block";
+    }
+
+    function deleteUser() {
+        var deleteForm = document.getElementById("deleteForm");
+        deleteForm.submit();
+    }
+
+    function closeModal() {
+        var modal = document.getElementById("confirmModal");
+        modal.style.display = "none";
+    }
+</script>
+<footer>
+    <p>&copy; 2024 Административный кабинет</p>
+</footer>
+<div id="confirmModal" class="modal">
+    <div class="modal-content">
+        <h3>Подтверждение удаления</h3>
+        <p>Вы уверены, что хотите удалить пользователя?</p>
+        <button onclick="deleteUser()">Удалить</button>
+        <button onclick="closeModal()">Отмена</button>
+    </div>
+</div>
+
+</body>
+</html>

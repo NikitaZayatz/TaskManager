@@ -1,0 +1,333 @@
+<!DOCTYPE html >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Board</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="/styles/styles.css">
+    <link rel="stylesheet" href="/styles/header.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+
+<body >
+
+<header>
+
+    <div class="container">
+        <form th:action="@{'/auth/index'}" method="get">
+            <input type="submit" class="material-symbols-outlined" value="home"/>
+        </form>
+
+
+        <h1>Менеджер задач</h1>
+        <div class="user-profile textManrope">
+            <form th:action="@{/search}" method="post" id ="myForm" >
+                <input type="text" name="myString" placeholder="Поиск..." th:value="${myString}" onkeydown="handleKeyPress(event)" style="background-color: white"/>
+            </form>
+            <form th:action="@{'/auth/homePage'}" method="get">
+
+                <input type="submit"  value="Личный кабинет " />
+            </form>
+            <form th:action="@{/logout}" method="get">
+                <input type="submit" class="material-symbols-outlined" value="logout"/>
+
+            </form>
+
+
+        </div>
+    </div>
+</header>
+
+<script>
+    function handleKeyPress(event) {
+        if (event.keyCode === 13) {
+            event.preventDefault(); // Предотвращаем отправку формы по умолчанию
+            document.getElementById("myForm").submit(); // Выполняем submit формы
+        }
+    }
+</script>
+
+<script src="/scripts/popup.js"></script>
+
+<main>
+    <div class="board">
+        <div class="column">
+            <h2>К выполнению</h2>
+            <div class="sorting-buttons">
+                <form onsubmit="event.preventDefault(); sendPutRequest()">
+                    <button type="submit">Сортировать по дедлайну</button>
+                </form>
+                <form th:method="POST" th:action="@{/indexToDoExecutor}">
+                    <button type = "submit" >Сортировать по исполнителю</button>
+                </form>
+            </div>
+
+            <form th:each="menu: ${todo}" >
+                <div class="task"  >
+                    <h2 th:text="${menu.name}"/>
+                    <p  th:text="${menu.description}"/>
+                    <p class="form" id="нроеоен">
+                        <strong > Дедлайн:</strong>
+                        <strong class="deadline" th:text="${menu.deadline}" />
+                    </p>
+                    <p class="form">
+                        <strong > Ответственный:</strong>
+                        <strong  th:text="${menu.getUsers()}" />
+                    </p>
+                    <div class="buttons_container textManrope">
+
+
+                        <form th:action="@{'/auth/taskOpen/' + ${menu.task_id}}" method="post">
+                            <input type="hidden" class="take-action-button" value="Подробнее"/>
+                        </form>
+
+
+                        <form th:action="@{'/auth/taskOpen/' + ${menu.task_id}}" method="post" >
+                            <input type="submit" class="take-action-button" value="Подробнее"/>
+                        </form>
+
+
+
+                        <form th:action="@{'/auth/taskToProcessRight/' + ${menu.task_id}}" method="post">
+                            <input type="submit"   class="material-symbols-rounded" value="arrow_forward_ios"/>
+                        </form>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="column" >
+            <h2>В процессе</h2>
+
+            <div class="sorting-buttons">
+                <form th:method="POST" th:action="@{/indexInprocess}">
+                    <button type="submit">Сортировать по дедлайну</button>
+                </form>
+                <form th:method="POST" th:action="@{/indexInProcessExecutor}">
+                    <button type = "submit" >Сортировать по исполнителю</button>
+                </form>
+
+
+            </div>
+
+            <form th:each="in: ${in_process}" id="formsContainer" >
+                <div class="task"  >
+                    <h2 th:text="${in.name}"/>
+                    <p  th:text="${in.description}"/>
+                    <p class="form" id="hyinya">
+                        <strong > Дедлайн:</strong>
+                        <strong class="deadline drawDeadLine" th:text="${in.deadline}" />
+                    </p>
+                    <p class="form">
+                        <strong > Ответственный:</strong>
+                        <strong  th:text="${in.getUsers()}" />
+                    </p>
+
+                    <div class="buttons_container textManrope">
+
+
+                        <form th:action="@{'/auth/taskOpen/' + ${in.task_id}}" method="post">
+                            <input type="hidden" class="take-action-button" value="Подробнее"/>
+                        </form>
+
+                        <form th:action="@{'/auth/taskToDoLeft/' + ${in.task_id}}" method="post">
+                            <input type="submit"   class="material-symbols-rounded" value="arrow_back_ios"/>
+                        </form>
+
+                        <form th:action="@{'/auth/taskOpen/' + ${in.task_id}}" method="post">
+                            <input type="submit" class="take-action-button" value="Подробнее"/>
+                        </form>
+
+
+
+                        <form th:action="@{'/auth/taskToDoNERight/' + ${in.task_id}}" method="post">
+                            <input type="submit"   class="material-symbols-rounded" value="arrow_forward_ios"/>
+                        </form>
+                    </div>
+
+
+
+
+
+                </div>
+            </form>
+        </div>
+        <div class="column">
+            <h2>Выполнено</h2>
+
+            <div class="sorting-buttons textManrope">
+                <form th:method="POST" th:action="@{/indexDone}">
+                    <button type="submit">Сортировать по дедлайну</button>
+                </form>
+                <form th:method="POST" th:action="@{/indexDoneExecutor}">
+                    <button type = "submit" >Сортировать по исполнителю</button>
+                </form>
+            </div>
+
+            <form action="#" th:each="d: ${done}">
+                <div class="task"  >
+                    <h2 th:text="${d.name}"/>
+                    <p  th:text="${d.description}"/>
+                    <p class="form" id="рпкерк">
+                        <strong > Дедлайн:</strong>
+                        <strong class="deadline"  th:text="${d.deadline}" />
+                    </p>
+                    <p class="form">
+                        <strong > Ответственный:</strong>
+                        <strong  th:text="${d.getUsers()}" />
+                    </p>
+
+
+
+
+                    <div class="buttons_container textManrope" >
+                        <form th:action="@{'/auth/taskOpen/' + ${d.task_id}}" method="post">
+                            <input type="hidden" class="take-action-button" value="Подробнее"/>
+                        </form>
+
+                        <form th:action="@{'/auth/taskToProcessLeft/' + ${d.task_id}}" method="post">
+                            <input type="submit"    class="material-symbols-rounded" value="arrow_back_ios"/>
+                        </form>
+
+                        <form th:action="@{'/auth/taskOpen/' + ${d.task_id}}" method="post">
+                            <input type="submit" class="take-action-button" value="Подробнее"/>
+                        </form>
+
+
+                    </div>
+
+
+
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+<div id="notification" class="notification"></div>
+<script >
+
+
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const options = { day: "numeric", month: "long", year: "numeric", hour: "numeric", minute: "numeric" };
+        const formattedDate = date.toLocaleString("ru-RU", options);
+        return formattedDate;
+    }
+
+    // Получаем все элементы с классом "deadline" и форматируем дату
+    const deadlineElements = document.getElementsByClassName("deadline");
+    for (let i = 0; i < deadlineElements.length; i++) {
+        const deadlineElement = deadlineElements[i];
+        const dateString = deadlineElement.textContent;
+        const formattedDate = formatDate(dateString);
+        deadlineElement.textContent = formattedDate;
+    }
+
+    function раскраситьДедлайны() {
+        var deadlines = document.querySelectorAll('.drawDeadLine');
+        console.log(deadlines);
+        var text = deadlines.outerText;
+        console.log(text);
+        deadlines.forEach(function(deadline) {
+            var dateString = deadline.textContent.trim();
+            var dateParts = dateString.split(' ');
+            var day = parseInt(dateParts[0]);
+            var month = getMonthIndex(dateParts[1]);
+            var year = parseInt(dateParts[2]);
+            var timeString = dateParts[5];
+            var timeParts = timeString.split(':');
+            var hour = parseInt(timeParts[0]);
+            var minute = parseInt(timeParts[1]);
+
+            var date = new Date(year, month, day, hour, minute);
+
+            var currentDate = new Date();
+            currentDate.setHours(0, 0, 0, 0);
+
+            var difference = date - currentDate;
+            var daysDifference = difference / (1000 * 3600 * 24);
+
+            if (daysDifference < 0) {
+                deadline.style.color = '#970101'; // Красный для просроченных дедлайнов
+            } else if (daysDifference < 1) {
+                deadline.style.color = '#dfcb65'; // Желтый для дедлайнов сегодня
+            } else {
+                deadline.style.color = '#049f04'; // Зеленый для будущих дедлайнов
+            }
+        });
+    }
+
+    // Вспомогательная функция для получения индекса месяца по его названию
+    function getMonthIndex(monthName) {
+        var months = {
+            'января': 0,
+            'февраля': 1,
+            'марта': 2,
+            'апреля': 3,
+            'мая': 4,
+            'июня': 5,
+            'июля': 6,
+            'августа': 7,
+            'сентября': 8,
+            'октября': 9,
+            'ноября': 10,
+            'декабря': 11
+        };
+
+        return months[monthName];
+    }
+
+    раскраситьДедлайны();
+
+
+</script>
+<script>
+
+
+
+
+    function showNotification(message) {
+        var notification = document.getElementById("notification");
+        notification.innerText = message;
+        notification.style.display = "block";
+        setTimeout(function() {
+            notification.style.display = "none";
+        }, 3000); // Уведомление будет скрыто через 3 секунды (3000 миллисекунд)
+    }
+
+
+
+
+    condition=true;
+</script>
+
+
+
+<script>
+    function sendPutRequest() {
+        const xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+
+            }
+        };
+        xhr.open('Get', '/indexTodo',true)
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.send();
+    }
+</script>
+
+
+
+
+<footer>
+    <p>&copy; 2024 Task Board. All rights reserved.</p>
+</footer>
+</body>
+
+</html>

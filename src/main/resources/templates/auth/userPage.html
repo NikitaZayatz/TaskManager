@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Страница пользователя</title>
+    <style>
+        /* Стили страницы */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main_container {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .task-list {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .task {
+            display: flex;
+            flex-wrap: wrap;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px;
+            background-color: #f9f9f9;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s;
+            flex-basis: 30%;
+        }
+
+        .task:hover {
+            transform: scale(1.05);
+        }
+
+        .task-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .task-description {
+            margin-bottom: 5px;
+        }
+
+        .task-deadline {
+            font-style: italic;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .task-status {
+            font-weight: bold;
+        }
+
+        .task-attachments {
+            margin-top: 10px;
+        }
+
+        .task-attachments a {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Анимация */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s;
+        }
+        .container {
+            text-align: center;
+            margin-top: 50px;
+
+            input {
+                display: inline-block;
+                padding: 10px 20px;
+                margin-left: 10px;
+                border-radius: 4px;
+                font-size: 16px;
+                text-decoration: none;
+                color: #fff;
+                background-color: #4cafa0;
+                border: none;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+
+            input:hover {
+                background-color: #4cafa0;
+            }
+            h1 {
+                font-family: Arial, sans-serif;
+                color: #ffffff;
+            }
+            input[type="text"] {
+
+                padding: 10px;
+                border-radius: 4px;
+                border: 1px solid #ccc;
+                font-size: 16px;
+            }
+        }
+        ::placeholder {
+            color: #ffffff;
+        }
+
+        .user-profile {
+            margin-top: 20px;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        header h1 {
+            font-size: 36px;
+        }
+
+        .container {
+            padding: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-profile input[type="text"] {
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .user-profile button {
+            padding: 8px 16px;
+            background-color: #4cafa0;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .user-profile button:hover {
+            background-color: #4cafa0;
+        }
+
+    </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+<body>
+<header>
+
+    <div class="container">
+        <form th:action="@{'/auth/index'}" method="get">
+            <input type="submit" class="material-symbols-outlined" value="home"/>
+        </form>
+
+
+        <h1>Задачи пользователя</h1>
+        <div class="user-profile">
+            <form th:action="@{'/auth/homePage'}" method="get">
+
+                <input type="submit" value="Личный кабинет" />
+            </form>
+            <form th:action="@{/logout}" method="get">
+                <input type="submit" class="material-symbols-outlined" value="logout"/>
+
+            </form>
+
+        </div>
+    </div>
+</header>
+
+
+<div class="main_container">
+    <ul class="task-list">
+        <li class="task fade-in" th:each="task: ${taskList}">
+            <div class="task-title" th:text="${task.name}"></div>
+            <div class="task-description" th:text="${task.description}"></div>
+            <div class="task-deadline" th:text="${task.deadline}"></div>
+            <div class="task-status" th:text="${task.status}"></div>
+            <div class="task-attachments">
+                Прикрепленные файлы:
+                <a href="#">Файл 1</a>
+                <a href="#">Файл 2</a>
+            </div>
+    </ul>
+</div>
+</body>
+</html>

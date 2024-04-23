@@ -1,0 +1,265 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+@import url( 'https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
+
+
+body {
+    font-family: "Manrope", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    margin: 0;
+    padding: 0;
+
+}
+.textManrope {
+    font-family: "Manrope", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+
+}
+
+main {
+    padding: 20px;
+}
+
+.board {
+    display: flex;
+    justify-content: space-between;
+}
+
+.column {
+    flex: 1;
+    padding: 20px;
+    margin: 0 10px;
+    border-radius: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.column h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.task {
+    border: solid;
+    background-size: 300px 300px;
+    background-color: #ffffff;
+    padding: 10px;
+    margin-bottom: 40px;
+    border-radius: 10px;
+    box-shadow: 0 20px 15px rgba(131, 2, 2, 0.1);
+    animation: fadeIn 1s ease-in-out;
+    animation-fill-mode: both;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+}
+
+.info {
+    padding: 20px;
+}
+
+a {
+    text-decoration: none; /* Убираем подчеркивание */
+    color: #333; /* Цвет текста */
+    transition: color 0.3s; /* Плавное изменение цвета при наведении */
+}
+
+a:hover {
+    color: #555; /* Цвет текста при наведении */
+}
+
+/* Стили для ссылки "login" */
+a.login-link {
+    padding: 8px 16px; /* Отступы */
+    background-color: #4cafa0; /* Цвет фона */
+    color: white; /* Цвет текста */
+    border-radius: 5px; /* Закругленные углы */
+    transition: background-color 0.3s; /* Плавное изменение цвета фона при наведении */
+}
+
+a.login-link:hover {
+    background-color: #4cafa0; /* Цвет фона при наведении */
+}
+
+.menu-button {
+    background-color: transparent; /* Прозрачный фон */
+    border: none; /* Убираем границу */
+    font-size: 24px; /* Размер шрифта */
+    cursor: pointer; /* Курсор указывает на возможность клика */
+    padding: 0; /* Убираем отступы */
+}
+
+.menu-button:hover {
+    color: #aaa; /* Цвет при наведении */
+}
+
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Прозрачный цвет */
+    z-index: 999; /* Наибольший z-index для поверхности перекрытия */
+    display: none; /* Изначально скрыт */
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    z-index: 1000; /* Значение z-index должно быть выше, чем у прозрачного слоя */
+    display: none; /* Изначально скрыт */
+}
+
+.filter-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.filter {
+    display: inline-flex;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.filter input[type="text"],
+.filter select,
+.filter input[type="date"],
+.filter button {
+    padding: 10px;
+    border: none;
+    background-color: transparent;
+    outline: none;
+    font-size: 16px;
+}
+
+.filter input[type="text"],
+.filter input[type="date"],
+.filter button {
+    flex: 1;
+}
+
+.filter select {
+    flex: 2;
+}
+
+.filter button {
+    background-color: #4cafa0;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.filter button:hover {
+    background-color: #4cafa0;
+}
+
+.sorting-buttons {
+    margin-bottom: 10px; /* Добавление отступа снизу */
+    display: ruby-text;
+}
+
+.sorting-buttons button {
+    margin-right: 10px; /* Добавление отступа между кнопками */
+    padding: 5px 10px; /* Установка отступов внутри кнопок */
+    background-color: #f0f0f0; /* Цвет фона кнопок */
+    border: 1px solid #ccc; /* Граница кнопок */
+    border-radius: 3px; /* Скругление углов кнопок */
+    cursor: pointer; /* Изменение курсора при наведении */
+}
+
+.sorting-buttons button:hover {
+    background-color: #e0e0e0; /* Цвет фона кнопок при наведении */
+}
+
+.take-action-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #4cafa0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.take-action-button:hover {
+    background-color: #4cafa0;
+}
+
+.date {
+    font-size: 16px;
+    color: #333;
+    background-color: #f0f0f0;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.material-symbols-outlined {
+    background-color: #333;
+}
+
+.material-symbols-outlined:hover {
+    background-color: #111;
+}
+
+.buttons_container {
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: center;
+}
+
+.buttons_container form {
+    margin-right: 10px;
+}
+
+.buttons_container input[type="submit"] {
+    background-color: #4cafa0;
+    color: white;
+    height: 50px;
+    border-radius: 10px;
+    border: none;
+}
+
+@media (max-width: 768px) {
+.buttons_container form {
+    margin-right: 5px;
+}
+
+.buttons_container input[type="submit"] {
+    width: 100px;
+}
+}
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px;
+    background-color: #27ae60;
+    color: #fff;
+    border-radius: 4px;
+    display: none;
+}

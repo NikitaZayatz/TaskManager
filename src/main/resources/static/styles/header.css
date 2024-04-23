@@ -1,0 +1,97 @@
+header {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+}
+
+header h1 {
+    font-size: 36px;
+}
+.container {
+    width: 90%;
+    margin: 0 auto;
+    padding: 20px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+}
+
+header h1 {
+    margin: 0;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+}
+
+.user-profile input[type="text"] {
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.user-profile button {
+    padding: 8px 16px;
+    background-color: #4cafa0;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.user-profile button:hover {
+    background-color: #4cafa0;
+}
+.container {
+    text-align: center;
+    margin-top: 50px;
+
+    input {
+        display: inline-block;
+        padding: 10px 20px;
+        margin-left: 10px;
+        border-radius: 4px;
+        font-size: 16px;
+        text-decoration: none;
+        color: #fff;
+        background-color: #4cafa0;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    input:hover {
+        background-color: #4cafa0;
+    }
+    h1 {
+        color: #ffffff;
+    }
+    input[type="text"] {
+
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+    }
+}
+::placeholder {
+    color: #ffffff; /* Желаемый цвет текста placeholder */
+}
+
+.user-profile {
+    margin-top: 20px;
+
+
+    input::placeholder {
+        color: black; /* Здесь можно указать желаемый цвет */
+    }
+}

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Card with Responses</title>
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            align-items: center;
+            margin: 0;
+            width: 100%;
+        }
+
+        .task-card {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .task-title {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .task-description {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .response-section {
+            margin-bottom: 20px;
+        }
+
+        .response-title {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .response-form {
+            display: flex;
+            align-items: center;
+        }
+
+        .response-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+        }
+
+        .response-submit-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .upload-file-section {
+            margin-bottom: 20px;
+        }
+
+        .file-upload-label {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .selected-file-name {
+            color: #333;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .dropdown select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            color: #333;
+            font-size: 16px;
+            cursor: pointer;
+            outline: none;
+        }
+        .container {
+            text-align: center;
+            margin-top: 50px;
+
+            input {
+                display: inline-block;
+                padding: 10px 20px;
+                margin-left: 10px;
+                border-radius: 4px;
+                font-size: 16px;
+                text-decoration: none;
+                color: #fff;
+                background-color: #4cafa0;
+                border: none;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+
+            input:hover {
+                background-color: #4cafa0;
+            }
+            h1 {
+                font-family: Arial, sans-serif;
+                color: #ffffff;
+            }
+            input[type="text"] {
+
+                padding: 10px;
+                border-radius: 4px;
+                border: 1px solid #ccc;
+                font-size: 16px;
+            }
+        }
+        ::placeholder {
+            color: #ffffff;
+        }
+
+        .user-profile {
+            margin-top: 20px;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        header h1 {
+            font-size: 36px;
+        }
+
+        .container {
+            padding: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-profile input[type="text"] {
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .user-profile button {
+            padding: 8px 16px;
+            background-color: #4cafa0;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .user-profile button:hover {
+            background-color: #4cafa0;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.js"></script>
+</head>
+<body>
+
+<header>
+
+    <div class="container">
+        <form th:action="@{'/auth/index'}" method="get">
+            <input type="submit" class="material-symbols-outlined" value="home"/>
+        </form>
+
+
+        <h1>Менеджер задач</h1>
+        <div class="user-profile">
+            <form th:action="@{'/auth/homePage'}" method="get">
+
+                <input type="submit"  value="Личный кабинет " />
+            </form>
+            <form th:action="@{/logout}" method="get">
+                <input type="submit" class="material-symbols-outlined" value="logout"/>
+
+            </form>
+
+
+        </div>
+    </div>
+</header>
+
+
+<main>
+    <div class="task-card"> <form th:object="${currentTask}"> <h2 class="task-title" th:text="${currentTask.name}"></h2> <p class="task-description" th:text="${currentTask.description}"></p> <div class="response-section"> <h3 class="response-title">Ответы от ответственных лиц</h3> <div class="response-form"> <textarea class="response-input" placeholder="Введите ваш ответ..."></textarea> <button class="response-submit-button">Отправить ответ</button> </div> </div> <div class="upload-file-section"> <form th:action="@{'/upload'}" method="post" enctype="multipart/form-data"> <input type="file" id="file-upload-input" name="file" accept=".pdf,.png,.jpg,.zip" style="display: none"> <label for="file-upload-input" class="file-upload-label">Прикрепить файл</label> <span id="selected-file-name" class="selected-file-name"></span> <button type="submit">Загрузить</button> </form> </div> <form> <div class="dropdown"> <select id="procedure1" name="procedure1" onchange="showImage(this)"> <option value="" disabled selected hidden>Выберите файл</option> <option th:each="file: ${files}" th:value="${file.id}" th:text="${file.fileName}"></option> </select> </div> </form> <p class="task-description" th:text="${currentTask.deadline}"></p> </form> </div>
+
+    <<!--div id="popupForm" class="popup-form">
+        <form class ="huge">
+            <!- Здесь размещаете поля и элементы формы &ndash;&gt;
+            <object th:each="pdf: ${pdfSrc}" th:data="${pdf}" type="application/pdf" width="100%" height="1920">
+                <embed th:src="@{pdf}"
+                       type="application/pdf" width="100%" height="1080" />
+
+            </object>
+        </form>
+    </div>-->
+
+            <img th:src="@{/assets/login.jpg}" style="width: 300px;height: 300px">
+
+</div>
+</main>
+
+
+<!--<script>
+    var popupForm = document.getElementById("popupForm");
+    var imageForm = document.getElementById("imageForm");
+    function showImage(selectElement) {
+        var selectedOption = selectElement.options[selectElement.selectedIndex];
+        var selectedValue = selectedOption.value;
+        console.log(selectedValue);
+        if(selectedValue === "3"){
+            imageForm.classList.remove("show");
+            popupForm.classList.toggle("show");
+        }
+        if(selectedValue === "4") {
+            popupForm.classList.remove("show");
+            imageForm.classList.toggle("show");
+        }
+
+    }
+    popupForm.classList.remove("show");
+
+</script>-->
+</body>
+</html>
