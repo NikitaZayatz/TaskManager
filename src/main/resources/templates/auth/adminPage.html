@@ -12,7 +12,7 @@
     <h1>Административный кабинет</h1>
 </header>
 
-<main>
+<main style="display: inline-block">
     <section class="tasks">
         <h2>Поставленные задачи</h2>
         <table>
@@ -23,17 +23,31 @@
                 <th>Дедлайн</th>
                 <th>Статус</th>
                 <th>Исполнители</th>
+                <th>Изменить</th>
+                <th>Удалить</th>
             </tr>
             </thead>
             <tbody>
 
 
-            <form th:each="task: ${tasks}" th:action="@{/admin/addTask/}" method="POST">
+            <form th:each="task: ${tasks}" th:action="@{/editTask/{id} (id=${task.task_id})}" method="post">
                 <tr>
                     <td><input th:value="${task.name}" id="attraction_name" name="attraction_name"/></td>
-                    <td><input th:value="${task.description}" id="attraction_description" name="attraction_description"/></td>
-                    <td><input th:value="${task.deadline}"/></td>
-                    <td><input th:value="${task.getStatus()}"/></td>
+                    <td><textarea th:value="${task.description}" th:text="${task.description}" id="attraction_description" name="attraction_description"></textarea></td>
+                    <td><input type="datetime-local" th:value="${task.deadline}" id="deadline" name="deadline"/></td>
+                    <td>
+                        <select id="procedure1" name="procedure1" th:value="${task.status}">
+                            <option th:text="${task.getStatus()}" disabled selected hidden></option>
+                            <option th:each="st: ${Status}" th:value="${st}" th:text="${st}"></option>
+                        </select>
+                    </td>
+                    <td>
+                        <div class="dropdown">
+                            <select id="userSelect" name="userSelect">
+                                <option th:each="user: ${users}" th:value="${user.userId}" th:text="${user.username}"></option>
+                            </select>
+                        </div>
+                    </td>
                     <td><input type="submit" value="Изменить"/></td>
                     <td>
                         <button type="button" onclick="confirmDelete(${task.task_id})">Удалить</button>
@@ -42,10 +56,9 @@
             </form>
             </tbody>
         </table>
-        <button class="new-task-button">Новая задача</button>
     </section>
 
-    <section class="responsibles">
+    <section class="tasks">
         <h2>Ответственные лица</h2>
         <table>
             <thead>
@@ -69,14 +82,13 @@
                     </td>
                     <td>
                         <form th:action="@{'/auth/deleteUser/' + ${user.userId}}" method="get" id="deleteForm">
-                        <button onclick="confirmDelete()">Удалить</button>
+                        <button type="submit" onclick="confirmDelete()">Удалить</button>
                          </form>
                     </td>
                 </tr>
             </form>
             </tbody>
         </table>
-        <button class="new-responsible-button">Добавить ответственное лицо</button>
     </section>
 </main>
 <script>

@@ -36,13 +36,13 @@ public class AplicationUser implements UserDetails {
             joinColumns ={@JoinColumn(name="user_id")},
             inverseJoinColumns = {@JoinColumn(name="task_id")}
     )
-    private Set<Task> tasks;
+    private List<Task> tasks;
 
-    public Set<Task> getTasks() {
+    public List<Task> getTasks() {
         return tasks;
     }
 
-    public void setTasks(Set<Task> tasks) {
+    public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
     }
 

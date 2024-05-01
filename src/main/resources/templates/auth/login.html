@@ -13,7 +13,7 @@
         }
 
         body {
-            background-image: url("C:/Users/NikitaPC/Desktop/demo/src/main/resources/templates/auth/assets/login.jpg");
+            background-image: url("/images/login.jpg");
             background-size:cover;
             font-family: 'Poppins', Arial, sans-serif;
             margin: 0;
@@ -104,10 +104,13 @@
         </div>
         <div style="display: grid">
         <input type="submit" class="animated-button" value="Login"/>
-        <button style="margin-top:10px" class="animated-button"><a style="text-decoration: none;" th:href="@{'/auth/registration'}">Регистрация</a></button>
+        <button style="margin-top:10px" class="animated-button"><a style="text-decoration: none;"
+                                                                   th:href="@{'/auth/registration'}">Регистрация</a>
+        </button>
         </div>
     </form>
 </div>
+
 </body>
 
 </html>

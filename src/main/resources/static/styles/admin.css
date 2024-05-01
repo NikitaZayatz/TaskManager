@@ -12,7 +12,7 @@ header {
 }
 
 main {
-    display: flex;
+    display: inline-block;
     justify-content: space-around;
     margin: 20px;
 }
@@ -66,6 +66,23 @@ footer {
 
 .input-container {
     position: relative;
+}
+
+.tasks {
+    border: solid;
+    background-size: 300px 300px;
+    background-color: #ffffff;
+    border-color:#8aa595;
+    padding: 10px;
+    margin-bottom: 40px;
+    border-radius: 10px;
+    box-shadow: 0 20px 15px rgba(131, 2, 2, 0.1);
+    animation: fadeIn 1s ease-in-out;
+    animation-fill-mode: both;
+}
+textarea{
+    width: 300px;
+    height: 120px;
 }
 
 input[type="text"] {

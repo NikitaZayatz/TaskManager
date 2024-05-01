@@ -2,15 +2,19 @@ package com.tasks.demo.controllers;
 
 
 import com.tasks.demo.models.Document;
+import com.tasks.demo.models.Task;
 import com.tasks.demo.repositories.FileRepository;
 import com.tasks.demo.repositories.TaskRepository;
 import com.tasks.demo.repositories.UserRepository;
 import com.tasks.demo.services.RegistrationService;
 import com.tasks.demo.services.TaskDetailService;
 import com.tasks.demo.util.PersonValidator;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,12 +46,14 @@ public class FileController {
 
 
     @PostMapping("/upload")
-    public String uploadFile(@RequestParam("file") MultipartFile file) {
+    public String uploadFile(@ModelAttribute("file") MultipartFile file, @ModelAttribute("id") int id, HttpServletRequest request) {
+        Task task = taskDetailService.get(id);
+        String referer = request.getHeader("Referer");
         if (!file.isEmpty()) {
             try {
                 String fileName = file.getOriginalFilename();
                 String fileExtension = getFileExtension(fileName);
-                String uploadDir = "templates/auth/assets"; // Укажите путь к папке на сервере, где будут храниться документы
+                String uploadDir = "C:\\Users\\NikitaPC\\Desktop\\demo\\src\\main\\resources\\static\\images"; // Укажите путь к папке на сервере, где будут храниться документы
                 File uploadPath = new File(uploadDir);
                 if (!uploadPath.exists()) {
                     uploadPath.mkdirs();
@@ -56,15 +62,16 @@ public class FileController {
                 File savedFile = new File(uploadDir + File.separator + uniqueFileName);
                 file.transferTo(savedFile);
                 Document document = new Document();
-                document.setFileName(fileName);
+                document.setFileName(uniqueFileName);
                 document.setFileExtension(fileExtension);
                 document.setFilePath(savedFile.getAbsolutePath());
+                document.setTask(task);
                 fileRepository.save(document);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        return "";
+        return "redirect:" + referer;
     }
 
     private String getFileExtension(String fileName) {

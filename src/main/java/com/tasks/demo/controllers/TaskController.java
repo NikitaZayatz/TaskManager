@@ -56,11 +56,17 @@ public class TaskController {
     }*/
 
 
-    @PostMapping("/auth/taskOpen/{id}")
+    @GetMapping("/auth/taskOpen/{id}")
     public String taskOpen(@PathVariable("id") int id, Model model) {
         Task currentTask = taskDetailService.get(id);
-        List<Document> docs= fileRepository.findAll();
-        model.addAttribute("files", docs);
+        List<Document> documents = new ArrayList<>();
+        List<Document> docs= currentTask.getDocuments();
+        for (Document doc : docs) {
+            if(doc.getFileExtension().equals("jpg") || doc.getFileExtension().equals("png")) {
+                documents.add(doc);
+            }
+        }
+        model.addAttribute("files", documents);
         model.addAttribute("currentTask", currentTask);
         return "/auth/taskPage";
     }

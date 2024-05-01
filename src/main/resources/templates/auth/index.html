@@ -5,18 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Board</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
     <link rel="stylesheet" href="/styles/styles.css">
     <link rel="stylesheet" href="/styles/header.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
 </head>
 
-<body >
+<body>
 
 <header>
 
-    <div class="container">
+    <div class="header_container">
         <form th:action="@{'/auth/index'}" method="get">
             <input type="submit" class="material-symbols-outlined" value="home"/>
         </form>
@@ -24,12 +26,13 @@
 
         <h1>Менеджер задач</h1>
         <div class="user-profile textManrope">
-            <form th:action="@{/search}" method="post" id ="myForm" >
-                <input type="text" name="myString" placeholder="Поиск..." th:value="${myString}" onkeydown="handleKeyPress(event)" style="background-color: white"/>
+            <form th:action="@{/search}" method="post" id="myForm">
+                <input type="text" name="myString" placeholder="Поиск..." th:value="${myString}"
+                       onkeydown="handleKeyPress(event)" style="background-color: white"/>
             </form>
             <form th:action="@{'/auth/homePage'}" method="get">
 
-                <input type="submit"  value="Личный кабинет " />
+                <input type="submit" value="Личный кабинет "/>
             </form>
             <form th:action="@{/logout}" method="get">
                 <input type="submit" class="material-symbols-outlined" value="logout"/>
@@ -61,21 +64,32 @@
                     <button type="submit">Сортировать по дедлайну</button>
                 </form>
                 <form th:method="POST" th:action="@{/indexToDoExecutor}">
-                    <button type = "submit" >Сортировать по исполнителю</button>
+                    <button type="submit">Сортировать по исполнителю</button>
                 </form>
             </div>
 
-            <form th:each="menu: ${todo}" >
-                <div class="task"  >
-                    <h2 th:text="${menu.name}"/>
-                    <p  th:text="${menu.description}"/>
+            <form th:each="menu: ${todo}">
+                <div class="task">
+                    <div style="display: flex;justify-content: space-between;align-items: center ">
+                        <h2 th:text="${menu.name}"/>
+                        <div>
+                        <span title="В данной задаче имеются прикрепленные файлы" th:if="${!menu.documents.isEmpty()}" class="material-symbols-outlined screpochka">
+                attach_file
+            </span>
+                            <button th:if="${menu.question != ''}" class="material-symbols-outlined notif">
+                                notifications
+                            </button>
+                        </div>
+                    </div>
+
+                    <p th:text="${menu.description}"/>
                     <p class="form" id="нроеоен">
-                        <strong > Дедлайн:</strong>
-                        <strong class="deadline" th:text="${menu.deadline}" />
+                        <strong> Дедлайн:</strong>
+                        <strong class="deadline" th:text="${menu.deadline}"/>
                     </p>
                     <p class="form">
-                        <strong > Ответственный:</strong>
-                        <strong  th:text="${menu.getUsers()}" />
+                        <strong> Ответственный:</strong>
+                        <strong th:text="${menu.getUsers()}"/>
                     </p>
                     <div class="buttons_container textManrope">
 
@@ -85,21 +99,23 @@
                         </form>
 
 
-                        <form th:action="@{'/auth/taskOpen/' + ${menu.task_id}}" method="post" >
-                            <input type="submit" class="take-action-button" value="Подробнее"/>
+                        <form th:action="@{'/auth/taskOpen/' + ${menu.task_id}}" method="get">
+                            <input type="submit" class="take-action-button" value="Подробнее">
                         </form>
 
-
+                        <form th:if="${role == 'ADMININSTRATION'}" th:action="@{/auth/adminPage}" method="get">
+                            <input type="submit" class="take-action-button" value="Редактировать">
+                        </form>
 
                         <form th:action="@{'/auth/taskToProcessRight/' + ${menu.task_id}}" method="post">
-                            <input type="submit"   class="material-symbols-rounded" value="arrow_forward_ios"/>
+                            <input type="submit" class="material-symbols-rounded" value="arrow_forward_ios"/>
                         </form>
                     </div>
                 </div>
             </form>
         </div>
 
-        <div class="column" >
+        <div class="column">
             <h2>В процессе</h2>
 
             <div class="sorting-buttons">
@@ -107,49 +123,61 @@
                     <button type="submit">Сортировать по дедлайну</button>
                 </form>
                 <form th:method="POST" th:action="@{/indexInProcessExecutor}">
-                    <button type = "submit" >Сортировать по исполнителю</button>
+                    <button type="submit">Сортировать по исполнителю</button>
                 </form>
 
 
             </div>
 
-            <form th:each="in: ${in_process}" id="formsContainer" >
-                <div class="task"  >
-                    <h2 th:text="${in.name}"/>
-                    <p  th:text="${in.description}"/>
-                    <p class="form" id="hyinya">
-                        <strong > Дедлайн:</strong>
-                        <strong class="deadline drawDeadLine" th:text="${in.deadline}" />
+            <form th:each="in: ${in_process}" id="formsContainer">
+                <div class="task">
+                    <div style="display: flex;justify-content: space-between; align-items: center">
+                        <h2 th:text="${in.name}"/>
+                        <div>
+                           <span th:if="${!in.documents.isEmpty()}" class="material-symbols-outlined screpochka">
+                attach_file
+            </span>
+
+
+                        <button th:if="${in.question != ''}" class="material-symbols-outlined notif">notifications
+                        </button>
+                        </div>
+                    </div>
+                    <p th:text="${in.description}"/>
+                    <p class="form" id="reg">
+                        <strong> Дедлайн:</strong>
+                        <strong class="deadline drawDeadLine" th:text="${in.deadline}"/>
                     </p>
                     <p class="form">
-                        <strong > Ответственный:</strong>
-                        <strong  th:text="${in.getUsers()}" />
+                        <strong> Ответственный:</strong>
+                        <strong th:text="${in.getUsers()}"/>
                     </p>
 
                     <div class="buttons_container textManrope">
 
 
-                        <form th:action="@{'/auth/taskOpen/' + ${in.task_id}}" method="post">
+                        <form th:action="@{'/auth/taskOpen/' + ${in.task_id}}" method="get">
                             <input type="hidden" class="take-action-button" value="Подробнее"/>
                         </form>
 
                         <form th:action="@{'/auth/taskToDoLeft/' + ${in.task_id}}" method="post">
-                            <input type="submit"   class="material-symbols-rounded" value="arrow_back_ios"/>
+                            <input type="submit" class="material-symbols-rounded" value="arrow_back_ios"/>
                         </form>
 
-                        <form th:action="@{'/auth/taskOpen/' + ${in.task_id}}" method="post">
+
+                        <form th:if="${role == 'ADMININSTRATION'}" th:action="@{/auth/adminPage}" method="get">
+                            <input type="submit" class="take-action-button" value="Редактировать">
+                        </form>
+
+                        <form th:action="@{'/auth/taskOpen/' + ${in.task_id}}" method="get">
                             <input type="submit" class="take-action-button" value="Подробнее"/>
                         </form>
 
 
-
                         <form th:action="@{'/auth/taskToDoNERight/' + ${in.task_id}}" method="post">
-                            <input type="submit"   class="material-symbols-rounded" value="arrow_forward_ios"/>
+                            <input type="submit" class="material-symbols-rounded" value="arrow_forward_ios"/>
                         </form>
                     </div>
-
-
-
 
 
                 </div>
@@ -163,42 +191,52 @@
                     <button type="submit">Сортировать по дедлайну</button>
                 </form>
                 <form th:method="POST" th:action="@{/indexDoneExecutor}">
-                    <button type = "submit" >Сортировать по исполнителю</button>
+                    <button type="submit">Сортировать по исполнителю</button>
                 </form>
             </div>
 
             <form action="#" th:each="d: ${done}">
-                <div class="task"  >
-                    <h2 th:text="${d.name}"/>
-                    <p  th:text="${d.description}"/>
+                <div class="task">
+                    <div style="display: flex;justify-content: space-between; align-items: center">
+                        <h2 th:text="${d.name}"/>
+                        <div>
+                               <span th:if="${!d.documents.isEmpty()}" class="material-symbols-outlined screpochka">
+                            attach_file
+                            </span>
+                        <button th:if="${d.question != ''}" class="material-symbols-outlined notif">notifications
+                        </button>
+                        </div>
+                    </div>
+                    <p th:text="${d.description}"/>
                     <p class="form" id="рпкерк">
-                        <strong > Дедлайн:</strong>
-                        <strong class="deadline"  th:text="${d.deadline}" />
+                        <strong> Дедлайн:</strong>
+                        <strong class="deadline" th:text="${d.deadline}"/>
                     </p>
                     <p class="form">
-                        <strong > Ответственный:</strong>
-                        <strong  th:text="${d.getUsers()}" />
+                        <strong> Ответственный:</strong>
+                        <strong th:text="${d.getUsers()}"/>
                     </p>
 
 
-
-
-                    <div class="buttons_container textManrope" >
+                    <div class="buttons_container textManrope">
                         <form th:action="@{'/auth/taskOpen/' + ${d.task_id}}" method="post">
                             <input type="hidden" class="take-action-button" value="Подробнее"/>
                         </form>
 
                         <form th:action="@{'/auth/taskToProcessLeft/' + ${d.task_id}}" method="post">
-                            <input type="submit"    class="material-symbols-rounded" value="arrow_back_ios"/>
+                            <input type="submit" class="material-symbols-rounded" value="arrow_back_ios"/>
                         </form>
 
-                        <form th:action="@{'/auth/taskOpen/' + ${d.task_id}}" method="post">
+                        <form th:if="${role == 'ADMININSTRATION'}" th:action="@{/auth/adminPage}" method="get">
+                            <input type="submit" class="take-action-button" value="Редактировать">
+                        </form>
+
+                        <form th:action="@{'/auth/taskOpen/' + ${d.task_id}}" method="get">
                             <input type="submit" class="take-action-button" value="Подробнее"/>
                         </form>
 
 
                     </div>
-
 
 
                 </div>
@@ -207,13 +245,12 @@
     </div>
 </main>
 <div id="notification" class="notification"></div>
-<script >
-
+<script>
 
 
     function formatDate(dateString) {
         const date = new Date(dateString);
-        const options = { day: "numeric", month: "long", year: "numeric", hour: "numeric", minute: "numeric" };
+        const options = {day: "numeric", month: "long", year: "numeric", hour: "numeric", minute: "numeric"};
         const formattedDate = date.toLocaleString("ru-RU", options);
         return formattedDate;
     }
@@ -232,7 +269,7 @@
         console.log(deadlines);
         var text = deadlines.outerText;
         console.log(text);
-        deadlines.forEach(function(deadline) {
+        deadlines.forEach(function (deadline) {
             var dateString = deadline.textContent.trim();
             var dateParts = dateString.split(' ');
             var day = parseInt(dateParts[0]);
@@ -288,23 +325,18 @@
 <script>
 
 
-
-
     function showNotification(message) {
         var notification = document.getElementById("notification");
         notification.innerText = message;
         notification.style.display = "block";
-        setTimeout(function() {
+        setTimeout(function () {
             notification.style.display = "none";
         }, 3000); // Уведомление будет скрыто через 3 секунды (3000 миллисекунд)
     }
 
 
-
-
-    condition=true;
+    condition = true;
 </script>
-
 
 
 <script>
@@ -316,13 +348,11 @@
 
             }
         };
-        xhr.open('Get', '/indexTodo',true)
+        xhr.open('Get', '/indexTodo', true)
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xhr.send();
     }
 </script>
-
-
 
 
 <footer>

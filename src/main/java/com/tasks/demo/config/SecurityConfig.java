@@ -14,6 +14,7 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 
 @Configuration
@@ -53,12 +54,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChaim(HttpSecurity http) throws Exception {
      return http
              .csrf(csrf -> csrf.disable())
+
              .formLogin(form ->form.loginPage("/auth/login").permitAll())
              .authorizeHttpRequests(auth->
              {
-                 auth.requestMatchers("/static/styles/**","/auth/registration").permitAll();
-                 auth.requestMatchers("/auth/**","/**","/assets/**").authenticated();
 
+                 auth.requestMatchers("/auth/registration","/static/images/**").permitAll();
+                 auth.requestMatchers("/auth/**","/**").authenticated();
              /*    auth.requestMatchers("/auth/userPage").hasRole("USER");
                  auth.requestMatchers("/auth/adminPage").hasRole("ADMIN");
                  auth.requestMatchers("/auth/administrationPage").hasRole("ADMINISTRATION");*/
@@ -82,6 +84,12 @@ public class SecurityConfig {
         return JsonMapper.builder()
                 .addModule(new JavaTimeModule())
                 .build();
+    }
+
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers( "/images/**");
     }
 
 }

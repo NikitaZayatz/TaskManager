@@ -1,6 +1,7 @@
 package com.tasks.demo.models;
 
 import jakarta.persistence.*;
+import org.springframework.beans.factory.annotation.Value;
 
 @Entity
 @Table(name = "documents")
@@ -15,7 +16,22 @@ public class Document {
     private String fileExtension;
     private String filePath;
 
+    @Column(columnDefinition = "boolean default false")
+    private boolean isMain;
+
+    @ManyToOne
+    @JoinColumn(name = "task_id")
+    private Task task;
+
     public Document() {
+    }
+
+    public Task getTask() {
+        return task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
     }
 
     public Document(String fileName, String fileExtension, String filePath) {

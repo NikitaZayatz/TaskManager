@@ -42,8 +42,19 @@ public class Task implements UserDetails {
     @ManyToMany(mappedBy = "tasks", fetch = FetchType.EAGER)
     private Set<AplicationUser> users;
 
+    @OneToMany(mappedBy = "task")
+    private List<Document> documents;
 
-  /*  @ManyToMany(fetch = FetchType.LAZY)
+    public List<Document> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(List<Document> documents) {
+        this.documents = documents;
+    }
+
+
+    /*  @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name="task_file_junction",
             joinColumns ={@JoinColumn(name="task_id")},
@@ -65,6 +76,26 @@ public class Task implements UserDetails {
              username += user.getUsername() + "  ";
         }
         return username;
+    }
+
+    private String answer;
+    private String question;
+
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
     }
 
     public void setUsers(Set<AplicationUser> users) {

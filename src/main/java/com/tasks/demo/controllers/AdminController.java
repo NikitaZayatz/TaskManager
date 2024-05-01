@@ -2,6 +2,7 @@ package com.tasks.demo.controllers;
 
 import com.tasks.demo.models.AplicationUser;
 import com.tasks.demo.models.Task;
+import com.tasks.demo.models.TaskStatus;
 import com.tasks.demo.repositories.TaskRepository;
 import com.tasks.demo.repositories.UserRepository;
 import com.tasks.demo.services.RegistrationService;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.tasks.demo.models.TaskStatus.*;
@@ -29,7 +31,7 @@ public class AdminController {
     private final RegistrationService registrationService;
     private final PersonValidator personValidator;
 
-    Set<Task> newTask = new HashSet<>();
+    List<Task> newTask = new ArrayList<>();
     Set<AplicationUser> newPerson = new HashSet<>();
     @Autowired
     private TaskRepository taskRepository;
@@ -48,10 +50,12 @@ public class AdminController {
     @GetMapping("/adminPage")
     public String admin(Model model)
     {
+
         List<Task> tasks = taskRepository.findAll();
         model.addAttribute("tasks", tasks);
         List<AplicationUser> users = userRepository.findAll();
         model.addAttribute("users", users);
+        model.addAttribute("Status", TaskStatus.getAll());
         return "/auth/adminPage";
     }
 
@@ -70,7 +74,23 @@ public class AdminController {
     @GetMapping( "/index" )
     public String  TransferPage(Model model) {
 
-        Set<Task> menuList = userRepository.findByUsername(getCurrentUsername()).getTasks();
+        String role = "USER";
+        AplicationUser person = userRepository.findByUsername(getCurrentUsername());
+        List<Task> menuList;
+        if(person.getAuthorities().stream().anyMatch(authority -> authority.getAuthority().equals("ADMIN"))){
+            menuList = taskRepository.findAll();
+        }
+        else if(person.getAuthorities().stream().anyMatch(authority -> authority.getAuthority().equals("USER"))){
+
+             menuList = userRepository.findByUsername(getCurrentUsername()).getTasks();
+
+        } else  {
+             role = "ADMININSTRATION";
+             menuList = taskRepository.findAll();
+        }
+
+
+
         List<Task> todo = new ArrayList<>();
         List<Task> in_process = new ArrayList<>();
         List<Task> done = new ArrayList<>();
@@ -86,6 +106,7 @@ public class AdminController {
                 done.add(task);
             }
         }
+        model.addAttribute("role", role);
         model.addAttribute("todo",todo);
         model.addAttribute("in_process",in_process);
         model.addAttribute("done",done);
@@ -108,14 +129,14 @@ public class AdminController {
     @GetMapping("/userPage")
     public String userPage(Model model) {
         AplicationUser user = userRepository.findByUsername(getCurrentUsername());
-        Set<Task> menuList =  user.getTasks();
+        List<Task> menuList =  user.getTasks();
         model.addAttribute("taskList", menuList);
         return "/auth/userPage";
     }
 
 
 
-    @PutMapping("/addTaskToUser/{id}")
+    @PostMapping("/addTaskToUser/{id}")
     public String addTaskToUser(@PathVariable int id,Model model) {
         Task task = taskDetailService.get(id);
         AplicationUser person = userRepository.findByUsername(getCurrentUserName());
@@ -149,6 +170,7 @@ public class AdminController {
         userRepository.save(newPerson);
         return "redirect:/auth/adminPage";
     }
+
 
 }
 
